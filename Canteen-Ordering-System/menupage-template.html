@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Menu Page</title>
+    <style>
+        body {
+            background-color: orange;
+        }
+
+        button {
+            font-size: 16px;
+            width: 65px;
+            height: 30px;
+            background-color: rgb(255, 221, 0);
+            border: 10px;
+            margin: 10px;
+            border-radius: 15px;
+            font-family: serif;
+            box-shadow: 3px 3px lightgray;
+            cursor: pointer;
+        }
+
+        #container {
+            text-align: center;
+        }
+        nav{
+            width:100vw;
+            height:30px;
+            display:flex;
+            align-items:center;
+            justify-content:space-around;
+
+        }
+        nav h1{
+            font-weight:500;
+        }
+        nav button {
+                
+            font-size: 16px;
+            width: 65px;
+            height: 30px;
+            background-color: rgb(255, 221, 0);
+            border: 10px;
+            margin: 10px;
+            border-radius: 2px;
+            font-family: serif;
+            box-shadow: 3px 3px lightgray;
+            cursor: pointer;
+        
+        }
+
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>Canteen</h1>
+        <button id="loginbtn" onclick="window.open('/api/user/login','_self')">Login</button>
+
+    </nav>
+    <h1 align="center">Menu</h1>
+    <table border="1px" width="50%" align="center">
+        <tr>
+            <th bgcolor="orange">Sl.no</th>
+            <th bgcolor="orange">Prod.name</th>
+            <th bgcolor="orange">Status</th>
+            <th bgcolor="orange">Price</th>
+            <th bgcolor="orange">Order Now</th>
+        </tr>
+        <tbody id="menu-items"></tbody>
+    </table>
+    <br>
+
+    <script>
+        // Replace the API_URL with your actual API endpoint URL to fetch menu data
+        var API_URL = 'http://localhost:18080/api/item/all';
+        // Replace the ORDER_API_URL with your actual API endpoint URL to place an order
+        var ORDER_API_URL = 'http://localhost:18080/api/order/new/';
+
+        // Fetch menu data from the API
+        let loginbtn = document.getElementById("loginbtn");
+        let localdata = localStorage.getItem("canteenuserdata");
+        if (localdata != undefined) {
+            let jsondata = JSON.parse(localdata);
+            let name = jsondata.name;
+            loginbtn.innerText = name
+
+
+
+        } else {
+            loginbtn.innerText = "LOGIN"
+        }
+        fetch(API_URL)
+            .then(response => response.json())
+            .then(data => {
+                var menuItems = document.getElementById('menu-items');
+
+                // Iterate over the fetched menu data and create table rows dynamically
+                data.forEach(item => {
+                    var row = document.createElement('tr');
+                    row.innerHTML = `
+                            <td>${item.id}</td>
+                            <td>${item.name}</td>
+                            <td>Available</td>
+                            <td>Rs ${item.price}</td>
+                            <td>
+                                <div id="container">
+                                    <button class="btn" onclick="placeOrder(${item.id})">Order</button>
+                                </div>
+                            </td>
+                        `;
+                    menuItems.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+        // Function to place an order
+        function placeOrder(itemId) {
+            // Retrieve user ID from localStorage
+            var data = localStorage.getItem('canteenuserdata');
+            if (!data) {
+                alert("Please login first");
+
+            }
+            let userdata = JSON.parse(data);
+                
+            // Create the request body with userId and itemId
+            var requestBody = JSON.stringify({
+                userid: userdata.id,
+            });
+            //print(reques)
+
+            // Send the order request to the API
+            fetch(`${ORDER_API_URL}${itemId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: requestBody
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Order placed successfully!');
+                        alert("Order Placed Successfully")
+                        window.open('/')
+
+                    } else {
+                        console.log('Failed to place the order');
+                        // Handle the error or display an error message
+                    }
+                })
+
+        }
+
+        </script>
+    </body>
+</html>
+                .

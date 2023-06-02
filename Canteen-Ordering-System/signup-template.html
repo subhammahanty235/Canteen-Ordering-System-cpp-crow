@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="signUp.css">
+    <title>Sign-up form</title>
+    <style>
+        body {
+            background-color: orange;
+        }
+
+        .card {
+            margin-top: 10%;
+            margin-left: 40%;
+            width: 330px;
+            
+            border-radius: 20px;
+            background-color: white;
+            text-align: center;
+        }
+
+        .firstname input {
+            margin-top: 10px;
+            border: none;
+            outline: none;
+            font-size: 20px;
+            border-bottom: 2px solid grey;
+            background-color: transparent;
+        }
+
+        .mobilenum input {
+            margin-top: 20px;
+            border: none;
+            outline: none;
+            font-size: 20px;
+            border-bottom: 2px solid grey;
+            background-color: transparent;
+        }
+
+        .Email input {
+            margin-top: 20px;
+            border: none;
+            outline: none;
+            font-size: 20px;
+            border-bottom: 2px solid grey;
+            background-color: transparent;
+        }
+        .enrollment input {
+            margin-top: 20px;
+            border: none;
+            outline: none;
+            font-size: 20px;
+            border-bottom: 2px solid grey;
+            background-color: transparent;
+        }
+
+        .Password input {
+            margin-top: 20px;
+            border: none;
+            outline: none;
+            font-size: 20px;
+            border-bottom: 2px solid grey;
+            background-color: transparent;
+        }
+
+        .Confirmpassword input {
+            margin-top: 20px;
+            border: none;
+            outline: none;
+            font-size: 20px;
+            border-bottom: 2px solid grey;
+            background-color: transparent;
+        }
+        .btn {
+            width: 250px;
+            height: 40px;
+            background-color: orange;
+            border: none;
+            color: white;
+            font-size: 18px;
+            border-radius: 20px;
+            margin-top: 40px;
+            cursor: pointer;
+        }
+
+            .btn:hover {
+                font-size: 20px;
+            }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="firstname">
+            <h1 class="head">Sign Up</h1>
+            <input type="text" placeholder="First name">
+        </div>
+        <div class="mobilenum">
+            <input type="text" placeholder="Mobile Number">
+        </div>
+        <div class="Email">
+            <input type="email" placeholder="Email">
+        </div>
+        <div class="enrollment">
+            <input type="text" placeholder="Enrollment">
+        </div>
+        <div class="Password">
+            <input type="password" placeholder="Password">
+        </div>
+        <div class="Confirmpassword">
+            <input type="password" placeholder="Confirm password">
+        </div>
+        <div id="container">
+            <button class="btn" onclick="signup()">Submit</button>
+        </div>
+    </div>
+
+    <script>
+        function signup() {
+            var firstName = document.querySelector('.firstname input').value;
+            var mobile = document.querySelector('.mobilenum input').value;
+            var email = document.querySelector('.Email input').value;
+            var enrollment = document.querySelector('.enrollment input').value;
+            var password = document.querySelector('.Password input').value;
+            var confirmPassword = document.querySelector('.Confirmpassword input').value;
+
+            // Perform validation or other necessary checks here
+            if (password !== confirmPassword) {
+                alert("Passwords do not match");
+                return;
+            }
+
+            // Replace the API_URL with your actual API endpoint URL for signup
+            var API_URL = 'http://localhost:18080/api/user/signup';
+
+            // Example using fetch API to make a POST request
+            fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: firstName,
+                    mobile: mobile,
+                    email: email,
+                    enrollment: enrollment,
+                    password: password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success === true) {
+                    localStorage.setItem("canteenuserdata", JSON.stringify(data));
+                    window.open("/" , '_self')
+                }
+                console.log(data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        }
+    </script>
+</body>
+</html>
