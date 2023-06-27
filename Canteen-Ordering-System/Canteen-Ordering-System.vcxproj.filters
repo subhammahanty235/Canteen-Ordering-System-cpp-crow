@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\templates">
-      <UniqueIdentifier>{06d4130c-5826-4fcd-9414-7350aa06e3d3}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -35,6 +32,15 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="login-template.html">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="userprofilepage-template.html">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="adminpage-template.html">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="admin-login-template.html">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

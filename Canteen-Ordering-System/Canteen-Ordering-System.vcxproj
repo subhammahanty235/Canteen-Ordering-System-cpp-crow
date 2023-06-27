@@ -130,9 +130,12 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="admin-login-template.html" />
+    <None Include="adminpage-template.html" />
     <None Include="login-template.html" />
     <None Include="menupage-template.html" />
     <None Include="signup-template.html" />
+    <None Include="userprofilepage-template.html" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="file.txt" />

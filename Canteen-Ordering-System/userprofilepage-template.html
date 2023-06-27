@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Profile</title>
+    <style>
+        body {
+            background-color: orange;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        h1 {
+            text-align: center;
+            color: orange;
+        }
+
+        .field {
+            margin-bottom: 10px;
+        }
+
+            .field label {
+                display: inline-block;
+                width: 150px;
+                font-weight: bold;
+            }
+
+            .field input {
+                width: 250px;
+                padding: 5px;
+            }
+
+            .field #totalspend {
+                font-size: 20px;
+                font-weight: bold;
+            }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .status-preparing {
+            color: orange;
+        }
+
+        .status-collect {
+            color: green;
+        }
+
+        .status-collected {
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Profile</h1>
+        <div class="field">
+            <label for="name">Name:</label>
+            <input type="text" id="name" readonly>
+        </div>
+        <div class="field">
+            <label for="mobilenumber">Mobile Number:</label>
+            <input type="text" id="mobilenumber" readonly>
+        </div>
+        <div class="field">
+            <label for="enrollment">Enrollment Number:</label>
+            <input type="text" id="enrollment" readonly>
+        </div>
+        <div class="field">
+            <label for="email">Email:</label>
+            <input type="text" id="email" readonly>
+        </div>
+        <div class="field">
+            <label for="totalspend">Total Spend:</label>
+            <input type="text" id="totalspend" readonly>
+        </div>
+
+        <h2>Order History</h2>
+        <table id="orderTable">
+            <tr>
+                <th>Order ID</th>
+                <th>Order Name</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Price</th>
+            </tr>
+        </table>
+
+
+
+    </div>
+
+    <script>
+        var data = localStorage.getItem('canteenuserdata');
+        if (!data) {
+            alert("Please login first");
+
+        }
+        let userdata = JSON.parse(data);
+        // Fetch user profile data from API
+        var apiurl = `http://localhost:18080/api/getuserinfo/${userdata.id}`; // Replace with the actual user ID
+        var orderUrl = "http://localhost:18080/api/order/all";
+        fetch(apiurl, {
+            method: "GET",
+            
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => response.json())
+
+            .then(data => {
+            console.log(data)
+            // Update the profile fields with fetched data
+            document.getElementById("name").value = data.name;
+            document.getElementById("mobilenumber").value = data.mobile;
+            document.getElementById("enrollment").value = data.enrollment;
+            document.getElementById("email").value = data.email;
+            document.getElementById("totalspend").value = data.totalspend;
+        })
+        .catch(error => {
+            console.error("Error fetching user profile:", error);
+        });
+
+        //for the order history
+        fetch(orderUrl, {
+            method: "POST",
+            body: JSON.stringify({ userid: userdata.id }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                // Generate rows for each order in the table
+                var orderTable = document.getElementById("orderTable");
+
+                data.forEach(order => {
+                    var row = orderTable.insertRow();
+                    row.insertCell().textContent = order.id;
+                    row.insertCell().textContent = order.order_name;
+                    row.insertCell().textContent = order.orderDate;
+                    var statusCell = row.insertCell();
+                    if (order.prepared === "0") {
+                        statusCell.textContent = "Preparing your order";
+                        statusCell.classList.add("status-preparing");
+                    } else if (order.prepared === "1" && order.collected === "0") {
+                        statusCell.textContent = "Please collect your order";
+                        statusCell.classList.add("status-collect");
+                    } else if (order.prepared === "1" && order.collected === "1") {
+                        statusCell.textContent = "Collected";
+                        statusCell.classList.add("status-collected");
+                    }
+                    row.insertCell().textContent = order.price;
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching order history:", error);
+            });
+    </script>
+</body>
+</html>

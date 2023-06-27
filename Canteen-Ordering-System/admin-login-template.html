@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login Form</title>
+    <style>
+        body {
+            background-color: orange;
+        }
+
+        .card {
+            margin-top: 10%;
+            margin-left: 40%;
+            width: 330px;
+            height: 360px;
+            border-radius: 20px;
+            background-color: white;
+            text-align: center;
+        }
+
+        .username input {
+            margin-top: 20px;
+            border: none;
+            outline: none;
+            font-size: 20px;
+            border-bottom: 2px solid grey;
+            background-color: transparent;
+        }
+
+        .username input {
+            margin-top: 20px;
+            border: none;
+            outline: none;
+            font-size: 20px;
+            border-bottom: 2px solid grey;
+            background-color: transparent;
+        }
+
+        .password input {
+            margin-top: 40px;
+            border: none;
+            outline: none;
+            font-size: 20px;
+            border-bottom: 2px solid grey;
+            background-color: transparent;
+        }
+
+        .forget {
+            margin-top: 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .btn .login-btn {
+            width: 250px;
+            height: 40px;
+            background-color: orange;
+            border: none;
+            color: white;
+            font-size: 18px;
+            border-radius: 20px;
+            margin-top: 40px;
+            cursor: pointer;
+        }
+
+            .btn .login-btn:hover {
+                font-size: 20px;
+            }
+
+        .sign-up {
+            margin-top: 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        span {
+            margin-top: 20px;
+            font-size: 18px;
+            color: orange;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="username">
+            <h1 class="head">Admin Login</h1>
+            <input type="text" id="usernameInput" placeholder="UserId" />
+        </div>
+        <div class="password">
+            <input type="password" id="passwordInput" placeholder="Password" />
+        </div>
+        
+        <div class="btn">
+            <button class="login-btn" onclick="login()">Login</button>
+        </div>
+        <div class="sign-up">Login As Member<span onclick="window.open('/api/user/login' ,'_self' )">Sign Up</span></div>
+    </div>
+
+    <script>
+        function login() {
+            
+            var username = document.getElementById('usernameInput').value;
+            var password = document.getElementById('passwordInput').value;
+           
+            
+            var API_URL = 'http://localhost:18080/api/admin/login';
+
+           
+            fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ adminid: username, password: password })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success == true) {
+                        localStorage.setItem("admin-data-canteen", JSON.stringify(data));
+
+                        window.open('/admin' , '_self')
+
+                    }
+                    
+                })
+                .catch(error => {
+
+                    console.log(error); 
+                });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <style>
+        
+        body{
+            padding:0;
+            
+            margin:0;
+           overflow:hidden;
+        }
+        .left-panel {
+            padding: 0px 0px 20px 25px;
+
+            width: 68%;
+            float: left;
+            border-right:7px solid orange;
+            height: 100vh;
+            
+        }
+      
+        /*
+        .orders-section {
+            width: 70%;
+            float: left;
+            margin-top: 20px;
+        }
+
+            */
+
+        .add-item-section {
+            width: 25%;
+            float: right;
+            padding: 0px 25px 0px 25px;
+        }
+       
+        .orders-section {
+            overflow: scroll;
+            overflow-x:hidden;
+            height:68%;
+        }
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            overflow:scroll;
+            // height:100%;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background-color: #45a049;
+            }
+
+        input[type="text"], input[type="number"] {
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        #add-item-form{
+            margin-bottom:15px;
+        }
+        .left-panel .admin-details p span{
+            font-weight:600;
+            font-size:24;
+            
+        }
+
+    </style>
+</head>
+<body>
+    <div class="left-panel">
+        <div class="admin-details" id="admin-details">
+            
+        </div>
+        <hr />
+        <hr />
+
+        <div class="orders-section">
+            <h2>Orders</h2>
+            <table id="orders-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Order Name</th>
+                        <th>Customer</th>
+                        <th>Customer's Email</th>
+                        <th>Price</th>
+                        <th>Order Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Order details will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+        
+    <div class="add-item-section">
+        <h2>Add Item</h2>
+        <form id="add-item-form">
+            <input type="text" id="item-name" placeholder="Item Name" required>
+            <input type="number" id="item-price" placeholder="Item Price" required>
+            <button  type="submit">Add Item</button>
+        </form>
+        <hr />
+        <hr />
+        
+
+        <h2>Existing Food Items</h2>
+        <table id="items-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Existing food items will be dynamically added here -->
+            </tbody>
+        </table>
+        
+    </div>
+
+    <script>
+
+
+        //fetch the data from API
+
+
+
+        
+        let datacom;
+        const fetchCombinedData = async() => {
+            try {
+                let admindata = localStorage.getItem("admin-data-canteen");
+                if (!admindata) {
+                    window.open('/api/admin/login');
+                }
+                
+                const ADMIN_PANEL_API = "http://localhost:18080/admin";
+                const response = await fetch(ADMIN_PANEL_API, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "admin-id-token-key": "1252627"
+                    }
+                });
+                const data = await response.json();
+                datacom = data;
+                console.log(datacom);
+                renderAdminDetails(datacom);
+                renderOrdersTable(datacom);
+                renderItemsTable(datacom);
+            } catch (error) {
+                console.error("Error fetching user profile:", error);
+            }
+        }
+
+        function renderAdminDetails(cd) {
+            /*
+            <div class="admin-details">
+                <h2>Admin Details</h2>
+                <p>Name: John Doe</p>
+                <p>ID: 123456</p>
+                <p>Mobile Number: 9876543210</p>
+                <p>Total Revenue: <span> $5000</span></p>
+            </div>
+
+            */
+            console.log("admin details")
+            const adminde = document.getElementById("admin-details");
+            let header = document.createElement("h2");
+            header.innerText = `Hello! Here's Your Details`
+            adminde.appendChild(header);
+            let name = document.createElement("p");
+            name.innerText = `Name : ${cd.adminDetails.name}`
+            adminde.appendChild(name);
+            let id = document.createElement("p");
+            id.innerText = `ID : ${cd.adminDetails.adminId}`
+            adminde.appendChild(id);
+            let mobile = document.createElement("p");
+            mobile.innerText = `Mobile Number : ${cd.adminDetails.mobile}`
+            adminde.appendChild(mobile);
+            let email = document.createElement("p");
+            email.innerText = `Email Id : ${cd.adminDetails.emailId}`
+            adminde.appendChild(email);
+            let revenue = document.createElement("p");
+            revenue.innerText = `Total Revenue : ${cd.adminDetails.revenue}`
+            adminde.appendChild(revenue);
+        }
+       
+        // Function to render orders table
+        function renderOrdersTable(cd) {
+            console.log("order table")
+            const ordersTable = document.getElementById("orders-table");
+            const tbody = ordersTable.getElementsByTagName("tbody")[0];
+
+            tbody.innerHTML = "";
+            console.log(cd)
+            cd.orders.forEach(order => {
+                const row = document.createElement("tr");
+
+                const idCell = document.createElement("td");
+                idCell.textContent = order.orderId;
+                row.appendChild(idCell);
+                
+                const orderNameCell = document.createElement("td");
+                orderNameCell.textContent = order.orderName;
+                row.appendChild(orderNameCell);
+
+                const customerNameCell = document.createElement("td");
+                customerNameCell.textContent = order.customerName;
+                row.appendChild(customerNameCell);
+
+                const customerEmailCell = document.createElement("td");
+                customerEmailCell.textContent = order.customerEmail;
+                row.appendChild(customerEmailCell);
+
+                const priceCell = document.createElement("td");
+                priceCell.textContent = order.price;
+                row.appendChild(priceCell);
+
+                const orderDateCell = document.createElement("td");
+                orderDateCell.textContent = order.orderDate;
+                row.appendChild(orderDateCell);
+
+                const statusCell = document.createElement("td");
+                const statusButton = document.createElement("button");
+                statusButton.style.width = "100px"
+
+                if (order.prepared === "0" && order.collected === "0") {
+                    statusButton.textContent = "Prepared ?";
+                    statusButton.style.background = "blue"
+                    // Add event listener for the "Prepared ?" button
+                    statusButton.addEventListener("click", async() => {
+
+                        let res = await fetch(`http://localhost:18080/api/order/changeflag/${order.orderId}`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+
+                            }
+                        }
+                        )
+
+                        let jsonres = await res.json();
+                        console.log(jsonres);
+
+                        if (jsonres.success === false) {
+                            console.log("false")
+                        }
+                        else {
+                            statusButton.style.background = "orange"
+                            statusButton.textContent = "Collected ?";
+                        }
+                    });
+                } else if (order.prepared === "1" && order.collected === "0") {
+                    statusButton.style.background = "orange"
+                    statusButton.textContent = "Collected ?";
+                    //event listener for the "Collected ?" button
+                    statusButton.addEventListener("click", async() => {
+
+                        let res = await fetch(`http://localhost:18080/api/order/changeflag/${order.orderId}`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+
+                            }
+                        }
+                        )
+
+                        let jsonres = await res.json();
+                        console.log(jsonres);
+
+                        if (jsonres.success === false) {
+                            console.log("false")
+                        }
+                        else {
+                            alert("Order Completed! Amount Added to Account")
+                            statusButton.style.background = "#4CAF50"
+                            statusButton.textContent = "Done";
+                          
+                        }
+
+                    });
+                } else {
+                    
+                    statusButton.textContent = "Done";
+                  
+                }
+
+                statusCell.appendChild(statusButton);
+                row.appendChild(statusCell);
+
+                tbody.appendChild(row);
+            });
+        }
+
+        // Function to render existing food items table
+        function renderItemsTable(cd) {
+            console.log("item table")
+
+            const itemsTable = document.getElementById("items-table");
+            const tbody = itemsTable.getElementsByTagName("tbody")[0];
+
+            tbody.innerHTML = "";
+
+            cd.items.forEach(item => {
+                const row = document.createElement("tr");
+
+                const nameCell = document.createElement("td");
+                nameCell.textContent = item.name;
+                row.appendChild(nameCell);
+
+                const priceCell = document.createElement("td");
+                priceCell.textContent = item.price;
+                row.appendChild(priceCell);
+
+                tbody.appendChild(row);
+            });
+        }
+
+        // Function to handle the form submission
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const itemNameInput = document.getElementById("item-name");
+            const itemPriceInput = document.getElementById("item-price");
+
+            const itemName = itemNameInput.value;
+            const itemPrice = parseInt(itemPriceInput.value);
+
+            if (itemName && itemPrice) {
+                let res = await fetch("http://localhost:18080/api/item/new", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                   body: JSON.stringify({ name: itemName, price: itemPrice.toString() })
+               })
+
+                res = await res.json();
+                if (res.status == false) {
+                    alert("Some error occured");
+
+                } else {
+                    alert("Yayyyy! new item added")
+                    
+                }
+               
+
+
+
+                // Render the updated items table
+                renderItemsTable();
+
+                // Reset the form inputs
+                itemNameInput.value = "";
+                itemPriceInput.value = "";
+            }
+        }
+
+        fetchCombinedData();
+       
+
+        // Add event listener for form submission
+        const addItemForm = document.getElementById("add-item-form");
+        addItemForm.addEventListener("submit", handleFormSubmit);
+
+    </script>
+</body>
+</html>
