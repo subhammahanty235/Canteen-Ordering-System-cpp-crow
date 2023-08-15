@@ -4,8 +4,9 @@
     <title>Menu Page</title>
     <style>
         body {
-            background-color: orange;
-            overflow-x:hidden;
+            background-color: #eabfff;
+            overflow-x: hidden;
+            overflow:hidden;
         }
 
         button {
@@ -15,6 +16,7 @@
             background-color: rgb(255, 221, 0);
             border: 10px;
             margin: 10px;
+            
             border-radius: 15px;
             font-family: serif;
             box-shadow: 3px 3px lightgray;
@@ -35,24 +37,27 @@
         .homeclass{
             background:#fff;
             height:90vh;
+            margin-top:10px;
             border-radius:10px;
+            overflow:scroll;
+            overflow-x:hidden;
+            
+
         }
         nav h1{
             font-weight:500;
         }
         nav button {
-                
             font-size: 16px;
-            
             height: 30px;
-            background-color: rgb(255, 221, 0);
+            background-color: #fff;
+            color:black;
             border: 10px;
             margin: 10px;
             border-radius: 2px;
             font-family: serif;
             box-shadow: 3px 3px lightgray;
             cursor: pointer;
-        
         }
         .navdiv{
             display:flex;
@@ -79,11 +84,11 @@
     <h1 align="center">Menu</h1>
     <table border="1px" width="60%" align="center" class="menutable">
         <tr>
-            <th bgcolor="orange">Sl.no</th>
-            <th bgcolor="orange">Product Name</th>
-            <th bgcolor="orange">Status</th>
-            <th bgcolor="orange">Price</th>
-            <th bgcolor="orange">Order Now</th>
+            <th bgcolor="#d580ff">Sl.no</th>
+            <th bgcolor="#d580ff">Product Name</th>
+            <th bgcolor="#d580ff">Status</th>
+            <th bgcolor="#d580ff">Price</th>
+            <th bgcolor="#d580ff">Order Now</th>
         </tr>
         <tbody id="menu-items"></tbody>
     </table>
@@ -173,8 +178,8 @@
                     console.log(data);
                    if (data.success) {
                         console.log('Order placed successfully');
-                        alert("Order Placed Successfully :) , Please go to profile page to track the order ")
-                        window.open('/')
+                        alert("Order Placed Successfully :), Please go to profile page to track the order ")
+                        window.open('/' ,'_self')
 
                     } else {
                        console.log('Failed to place the order');

@@ -4,7 +4,7 @@
     <title>User Profile</title>
     <style>
         body {
-            background-color: orange;
+            background-color: #eabfff;
             font-family: Arial, sans-serif;
             padding: 20px;
         }
@@ -15,11 +15,14 @@
             background-color: white;
             padding: 20px;
             border-radius: 5px;
+            max-height:98vh;
+            height:98%;
+            overflow:hidden;
         }
 
         h1 {
             text-align: center;
-            color: orange;
+            color: #800080;
         }
 
         .field {
@@ -45,6 +48,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+           
         }
 
         th, td {
@@ -63,6 +67,10 @@
 
         .status-collected {
             color: blue;
+        }
+        #orderTable{
+           
+            height:30%;
         }
     </style>
 </head>
@@ -150,7 +158,7 @@
                 console.log(data)
                 // Generate rows for each order in the table
                 var orderTable = document.getElementById("orderTable");
-
+                
                 data.forEach(order => {
                     var row = orderTable.insertRow();
                     row.insertCell().textContent = order.id;

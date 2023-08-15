@@ -305,6 +305,8 @@ int main() {
 
             res.write(jsonResponse.dump());
             res.end();
+            sqlite3_finalize(stmt);
+            sqlite3_close(db);
         }
         
         });
@@ -405,6 +407,7 @@ int main() {
         if (rc != SQLITE_OK) {
             std::cout << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
             sqlite3_close(db);
+            sqlite3_finalize(stmt);
             res.write("Error happened");
             res.end();
             return;
@@ -422,7 +425,7 @@ int main() {
             cout << adminData << endl;
             combinedJson["adminDetails"] = adminData;
         }
-
+        sqlite3_finalize(stmt);
         //getting the order details for admin
 
         std::string orderdatastatement = "SELECT food_order.* , User.name , User.emailid FROM food_order JOIN USER ON food_order.customer_id = USER.userId ;";
@@ -430,6 +433,7 @@ int main() {
         if (rc != SQLITE_OK) {
             std::cout << "Error preparing statement(Order Data): " << sqlite3_errmsg(db) << std::endl;
             sqlite3_close(db);
+            sqlite3_finalize(stmt);
             res.write("Error happened");
             res.end();
             return;
@@ -452,7 +456,7 @@ int main() {
             orderArray.push_back(jsonObj);
             rc = sqlite3_step(stmt);
         }
-
+        sqlite3_finalize(stmt);
         combinedJson["orders"] = orderArray;
 
         // getting all the food items for admin 
@@ -461,7 +465,9 @@ int main() {
 
         if (rc != SQLITE_OK) {
             std::cout << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+            sqlite3_finalize(stmt);
             sqlite3_close(db);
+
             res.write("Error happened");
             return;
         }
@@ -475,6 +481,7 @@ int main() {
             itemArray.push_back(jsonObject);
             rc = sqlite3_step(stmt);
         }
+        sqlite3_finalize(stmt);
 
         combinedJson["items"] = itemArray;
 
@@ -484,7 +491,6 @@ int main() {
         //final response
         res.write(nlohmann::json(combinedJson).dump());
         res.end();
-        sqlite3_finalize(stmt);
         sqlite3_close(db);
         return;
 
@@ -733,6 +739,7 @@ int main() {
 
         if (rc != SQLITE_OK) {
             std::cout << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+            sqlite3_finalize(stmt);
             sqlite3_close(db);
             nlohmann::json jsonResponse;
             jsonResponse["success"] = false;
@@ -750,6 +757,7 @@ int main() {
             std::cout << "Error inserting data: " << sqlite3_errmsg(db) << std::endl;
             nlohmann::json jsonResponse;
             jsonResponse["success"] = false;
+            sqlite3_finalize(stmt);
             res.write(jsonResponse.dump());
             res.end();
             sqlite3_finalize(stmt);
@@ -760,6 +768,7 @@ int main() {
             cout << "data Inserted " << endl;
             nlohmann::json jsonResponse;
             jsonResponse["success"] = true;
+
             res.write(jsonResponse.dump());
             res.end();
             sqlite3_finalize(stmt);
