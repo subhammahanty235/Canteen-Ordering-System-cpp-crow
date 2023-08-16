@@ -101,7 +101,7 @@
             
             var username = document.getElementById('usernameInput').value;
             var password = document.getElementById('passwordInput').value;
-           
+            
             
             var API_URL = 'http://localhost:18080/api/admin/login';
 
@@ -114,12 +114,16 @@
                 body: JSON.stringify({ adminid: username, password: password })
             })
                 .then(response => response.json())
+
                 .then(data => {
+                    console.log(data);
                     if (data.success == true) {
                         localStorage.setItem("admin-data-canteen", JSON.stringify(data));
 
-                        window.open('/admin' , '_self')
+                        window.open('/admin', '_self')
 
+                    } else {
+                        alert(data.message);
                     }
                     
                 })

@@ -157,6 +157,7 @@
     <script>
 
 
+
         //fetch the data from API
 
 
@@ -166,8 +167,9 @@
         const fetchCombinedData = async() => {
             try {
                 let admindata = localStorage.getItem("admin-data-canteen");
+                console.log(admindata);
                 if (!admindata) {
-                    window.open('/api/admin/login');
+                    window.open('/api/admin/login','_self');
                 }
                 
                 const ADMIN_PANEL_API = "http://localhost:18080/admin";
